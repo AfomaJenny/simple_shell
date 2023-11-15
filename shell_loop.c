@@ -65,12 +65,12 @@ int find_builtin(info_t *info)
 		{NULL, NULL}
 	};
 
-	for (i = 0; builtintbl[i].typr; i++)
+	for (i = 0; builtintbl[i].type; i++)
 
-		if (_strcmp(info->argv[0], builtintbl[i].typr) == 0)
+		if (_strcmp(info->argv[0], builtintbl[i].type) == 0)
 		{
 			info->line_count++;
-			built_in_ret = builtintbl[i].func(info);
+			built_in_ret = builtintbl[i].fuc(info);
 			break;
 		}
 	return (built_in_ret);
@@ -95,11 +95,10 @@ void find_cmd(info_t *info)
 	for (i = 0, k = 0; info->arg[i]; i++)
 		if (!is_delim(info->arg[i], "\t\n"))
 			k++;
-	if (!K)
+	if (!k)
 		return;
 
-	path = find_path(info, _getenv(info, "PATH=")
-			, info->arg[0]);
+	path = find_path(info, _getenv(info, "PATH="), info->argv[0]);
 	if (path)
 	{
 		info->path = path;
@@ -138,7 +137,7 @@ void fork_cmd(info_t *info)
 	if (child_pid == 0)
 	{
 		if (execve(info->path, info->argv,
-					getenviron(info)) == -1)
+					get_environ(info)) == -1)
 		{
 			free_info(info, 1);
 			if (errno == EACCES)

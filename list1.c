@@ -24,27 +24,35 @@ size_t list_len(const list_t *h)
 */
 char **list_to_strings(list_t *head)
 {
-	size_t count = list_len(head);
-	char **strings = malloc(sizeof(char *) * (count + 1));
-	size_t i = 0;
+	list_t *node = head;
+	size_t i = list_len(head), j;
+	char **strs;
+	char *str;
 
-	if (!strings)
+	if (!head || !i)
 		return (NULL);
+	strs = malloc(sizeof(char *) * (i + 1));
 
-	while (head)
+	if (!strs)
+		return (NULL);
+	for (i = 0; node; node = node->next, i++)
 	{
-		strings[i] = _strdup(head->str);
-		if (!strings[i])
+		str = malloc(_strlen(node->str) + 1);
+		if (!str)
 		{
-			free_strings(strings);
+			for (j = 0; j < i; j++)
+				free(strs[j]);
+			free(strs);
 			return (NULL);
 		}
-		head = head->next;
-		i++;
+
+		str = _strcpy(str, node->str);
+		strs[i] = str;
 	}
-	strings[i] = NULL;
-	return (strings);
+	strs[i] = NULL;
+	return (strs);
 }
+
 /**
 * print_list - prints all elements of a list_t linked list
 * @h: pointer to first node
