@@ -12,10 +12,12 @@ int main(int ac, char **av)
 	info_t info[] = { INFO_INIT };
 	int fd = 2;
 
-	asm ("mov %1, %0\n\t"
+	__asm__ (
+			"mov %1, %0\n\t"
 			"add $3, %0"
 			: "=r" (fd)
-			: "r" (fd));
+			: "r" (fd)
+	    );
 	if (ac == 2)
 	{
 		fd = open(av[1], O_RDONLY);
